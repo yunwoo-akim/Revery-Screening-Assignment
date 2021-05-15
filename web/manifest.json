@@ -1,7 +1,7 @@
 {
     "name": "kado_sitting",
     "short_name": "kado_sitting",
-    "start_url": ".",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
