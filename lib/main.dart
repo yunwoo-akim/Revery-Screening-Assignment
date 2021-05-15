@@ -4,6 +4,30 @@ import 'package:rive/rive.dart';
 
 void main() => runApp(MyApp());
 
+class FadeRoute extends PageRouteBuilder {
+  final Widget page;
+
+  FadeRoute({this.page})
+      : super(
+          pageBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) =>
+              page,
+          transitionsBuilder: (
+            BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+            Widget child,
+          ) =>
+              FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
+}
+
 class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,26 +39,27 @@ class IntroScreen extends StatelessWidget {
             child: Column(children: <Widget>[
           Text(
             "\n\n\n\n\n\n\n\n\n\n\n\n\n\nHello! Today you'll be meeting Kado,"
-            "the friendly koala. "
+            " the friendly koala. "
             "\nIt loves to eat and sleep, dance and wave. "
             "\nClick \"Continue\" to see Kado eat!"
-            "\nClick \"Explore\" to see what other things Kado does in his free time!\n",
+            "\n",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
+          /*
               ElevatedButton(
                   child: Text("Explore"),
                   onPressed: () {
                     Navigator.pushNamed((context), '/explore');
                   }),
           Text("\n"),
+               */
           ElevatedButton(
               child: Text("Continue"),
               onPressed: () {
-                Navigator.pushNamed((context), '/kado');
+                Navigator.push(context, FadeRoute(page: MyHomePage()));
               }),
-
         ])));
   }
 }
