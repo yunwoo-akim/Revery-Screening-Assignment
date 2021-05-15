@@ -41,20 +41,18 @@ class IntroScreen extends StatelessWidget {
             "\n\n\n\n\n\n\n\n\n\n\n\n\n\nHello! Today you'll be meeting Kado,"
             " the friendly koala. "
             "\nIt loves to eat and sleep, dance and wave. "
-            "\nClick \"Continue\" to see Kado eat!"
-            "\n",
+            "\nClick \"Explore\" to see Kado do other activities!"
+            "\nClick \"Continue\" to see Kado eat!\n",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
-          /*
               ElevatedButton(
                   child: Text("Explore"),
                   onPressed: () {
-                    Navigator.pushNamed((context), '/explore');
+                    Navigator.push(context, FadeRoute(page: ExplorePage()));
                   }),
           Text("\n"),
-               */
           ElevatedButton(
               child: Text("Continue"),
               onPressed: () {
@@ -78,6 +76,7 @@ class _MyApp extends State<MyApp> with SingleTickerProviderStateMixin {
       routes: {
         '/': (context) => IntroScreen(),
         '/kado': (context) => MyHomePage(),
+        '/explore': (context) => ExplorePage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
@@ -89,23 +88,18 @@ class _MyApp extends State<MyApp> with SingleTickerProviderStateMixin {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> {
   final riveFile = 'assets/kado-sit-eat.riv';
-
   void _togglePlay() {
     debugPrint('playing: $isPlaying');
     setState(() => _controller.isActive = !_controller.isActive);
   }
-
   bool get isPlaying => _controller?.isActive ?? false;
   Artboard _riveArtboard;
   RiveAnimationController _controller;
-
   @override
   void initState() {
     super.initState();
@@ -118,11 +112,52 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Kado Sits and Eats!')),
+      body: Center(
+        child: _riveArtboard == null
+            ? const SizedBox()
+            : Rive(artboard: _riveArtboard),
+      ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: _togglePlay, child: Text(isPlaying ? 'Stop' : 'Start')),
+    );
+  }
+}
+
+class ExplorePage extends StatefulWidget {
+  ExplorePage({Key key, this.title}) : super(key: key);
+  final String title;
+  @override
+  _ExplorePageState createState() => _ExplorePageState();
+}
+class _ExplorePageState extends State<ExplorePage> {
+  final riveFile = 'assets/kado-sit-eat.riv';
+  void _togglePlay() {
+    debugPrint('playing: $isPlaying');
+    setState(() => _controller.isActive = !_controller.isActive);
+  }
+  bool get isPlaying => _controller?.isActive ?? false;
+  Artboard _riveArtboard;
+  RiveAnimationController _controller;
+  @override
+  void initState() {
+    super.initState();
+    rootBundle.load(riveFile).then(
+          (animation) async {
+        final file = RiveFile.import(animation);
+        final artboard = file.mainArtboard;
+        artboard.addController(_controller = SimpleAnimation('Steph Dance'));
+        setState(() => _riveArtboard = artboard);
+      },
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Kado Dances!')),
       body: Center(
         child: _riveArtboard == null
             ? const SizedBox()
